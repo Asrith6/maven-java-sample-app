@@ -1,4 +1,3 @@
-
 name: SonarQube
 
 on:
@@ -10,11 +9,12 @@ on:
 
 jobs:
   build:
-    name: Build and analyze
+    name: Build and Analyze
     runs-on: self-hosted
 
     steps:
-      - uses: actions/checkout@v7
+      - name: Checkout Source Code
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
@@ -25,14 +25,14 @@ jobs:
           distribution: temurin
           cache: maven
 
-      - name: Cache SonarQube packages
+      - name: Cache SonarQube Packages
         uses: actions/cache@v6
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      - name: Build and analyze
+      - name: Build and SonarQube Analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: >
@@ -40,3 +40,4 @@ jobs:
           org.sonarsource.scanner.maven:sonar-maven-plugin:sonar
           -Dsonar.projectKey=test-maven-java
           -Dsonar.host.url=http://localhost:9000
+          -Dsonar.token=$SONAR_TOKEN
